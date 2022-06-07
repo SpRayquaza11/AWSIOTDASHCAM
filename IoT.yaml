@@ -1,6 +1,15 @@
 AWSTemplateFormatVersion: "2010-09-09"
-DeviceName : String
-FunctionName : String 
+Description: Use this Magic CFN template to create your environment!
+Parameters:
+   DeviceName :
+     Type: AWS::IoT::Thing 
+     Description : enter the IoT device name
+   FunctionName : 
+      Type: AWS::Lambda::Function 
+      Description : enter the Function name
+    S3BucketName : 
+      Type: AWS::S3::Bucket 
+      Description : enter the Function name
 Description: Use this Magic wand to create your environment (may incur cost)
 Resources:
   Type: AWS::IoT::Thing
@@ -10,8 +19,7 @@ Resources:
     ThingName: !Ref DeviceName
   Type: AWS::Lambda::Function
   Properties:
-    Zipfile: |
-     
+    
       
 
 
