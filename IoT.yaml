@@ -1,8 +1,17 @@
 AWSTemplateFormatVersion: "2010-09-09"
+DeviceName : String
+FunctionName : String 
 Description: Use this Magic wand to create your environment (may incur cost)
 Resources:
   Type: AWS::IoT::Thing
   Properties: 
     AttributePayload: 
-      AttributePayload
-    ThingName: String
+      Images JPG
+    ThingName: !Ref DeviceName
+  Type: AWS::Lambda::Function
+  Properties:
+    Zipfile: |
+     
+      
+
+
