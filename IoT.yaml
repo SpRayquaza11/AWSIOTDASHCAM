@@ -1,24 +1,73 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: Use this Magic CFN template to create your environment!
+Description: # Use this Magic CFN template to create your environment!
 Parameters:
-   DeviceName :
+   DeviceNameIoT :
      Type: AWS::IoT::Thing 
-     Description : enter the IoT device name
-   FunctionName : 
+     Description : # enter the IoT device name
+   FunctionNameLambda : 
       Type: AWS::Lambda::Function 
-      Description : enter the Function name
-    S3BucketName : 
+      Description : # enter the Function name
+   S3BucketName : 
       Type: AWS::S3::Bucket 
-      Description : enter the Function name
-Description: Use this Magic wand to create your environment (may incur cost)
+      Description : # enter the Bucket name Note: must be Unique
 Resources:
-  Type: AWS::IoT::Thing
-  Properties: 
-    AttributePayload: 
-      Images JPG
-    ThingName: !Ref DeviceName
-  Type: AWS::Lambda::Function
-  Properties:
+   LambdaBasicExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyName: CustomLambdaS3
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - S3:PutObject
+                Resource: !GetAtt 
+    FunctionName: !Ref DeviceNameIoT
+    Properties: 
+      AttributePayload: 
+        Images JPG
+    FunctionName: !Ref FunctionNameLambda 
+    Properties:
+      Runtime: python 3.9 # Or use a 3.x version that you wish
+      Timeout: 30 
+      Code:
+        ZipFile: |
+            import boto3
+            from botocore.client import Config
+            import json
+            import uuid
+
+            def lambda_handler(event, context):
+                bucket_name = 
+                file_name = str(uuid.uuid4()) + '.jpg'
+
+                mqtt = boto3.client('iot-data', region_name='REGION')
+                s3 = boto3.client('s3')
+
+                url = s3.generate_presigned_url('put_object', Params={'Bucket':bucket_name, 'Key':file_name}, ExpiresIn=600, HttpMethod='PUT')
+                # command = "curl --request PUT --upload-file {} '{}'".format(file_name, url)
+                # print(command) # for local testing purpose
+                # print(file_name + '/' + url[8:]) # for local testing purposes
+                # 
+
+                response = mqtt.publish(
+                        topic='PI/sub/url',
+                        qos=0,
+                        payload=file_name + '/' + url[8:]
+                    )
+        
+
+       
+
+       
     
       
 
