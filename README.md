@@ -1,2 +1,2 @@
-# AWSIOTDASHCAM
-IoT project for creating a dashcam with AWS IoT and Ras Pi
+# AWSIoT_CFN_Trial
+IoT project creation using template defination only
